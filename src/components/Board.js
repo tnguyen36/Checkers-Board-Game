@@ -1,5 +1,6 @@
 import React from 'react';
 import Piece from './Piece';
+import './styles.css';
 
 
 
@@ -9,9 +10,7 @@ const renderBoard = (props) => {
  for (var row = 0; row < board.length; row++) {
      for (var col = 0; col < board[row].length; col++) {
          results.push(
-         
-            <Piece id={'' + row + col} color={board[row][col]} onSelect={onSelect} selectOptions={selectOptions} />
-        
+                <Piece id={'' + row + col} color={board[row][col]} onSelect={onSelect} selectOptions={selectOptions} />    
          );
      }
  }
@@ -21,7 +20,7 @@ const renderBoard = (props) => {
 const Board = (props) => {
     
     return (
-        <div className="row">
+        <div className="board">
             {renderBoard(props)}
         </div>
     )
