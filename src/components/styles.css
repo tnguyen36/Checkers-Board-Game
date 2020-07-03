@@ -1,0 +1,18 @@
+.piece {
+    width: 12%;
+    height: 50px;
+    background: white;
+}
+
+
+.selectedBox {
+    box-shadow: 0 0 20px black;
+}
+
+.red {
+    background: red;
+}
+
+.black {
+    background-color: black;
+}
