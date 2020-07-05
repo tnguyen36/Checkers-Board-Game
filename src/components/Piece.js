@@ -3,10 +3,12 @@ import './styles.css';
 
 const Piece = (props) => {
     return (
-        <div
-            id={props.id} 
-            className={`${props.color === null ? 'white' : props.color} piece ${props.selectOptions.includes(props.id) ? 'selectedBox' : 'box'}`} 
-            onClick={props.onSelect}>
+        <div className={`piece ${props.selectOptions.includes(props.id) ? 'selectedBox' : 'box'} ${props.tile ? 'color-tile' : undefined}`}>
+            <div 
+                id={props.id} 
+                className={`${props.color === null ? 'empty' : props.color}`}
+                onClick={props.onSelect}>
+            </div>
         </div>
         
     )

@@ -1,36 +1,42 @@
 .piece {
-    width: 12%;
-    height: 50px;
-    background: white;
-    float: left;
-    border: 1px solid black;
-    border-radius: 50%;
+    height: 65px;
+    background: aliceblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.chess-piece {
-    border-radius: 50%; 
-    width: 25px;
-    height:25px; 
-    margin: 0 auto
+.color-tile {
+    background: #282c34;
+}
+
+.piece div {
+    border-radius: 50%;
+    width: 80%;
+    height: 80%;
+    
+
+}
+
+.empty {
+    border: none;
+    background: transparent;
 }
 
 .selectedBox.piece {
-    background-color: blue !important;
-    box-shadow: 0 0 20px white;
-    border: 1px solid white;
-    opacity: 0.5;
-}
-
-.red {
-    background-color: red;
-}
-
-.black {
-    background-color: black;
+    background-color: yellow !important;
+    box-shadow: 0 0 20px white; 
+    /* border: 1px solid white; */ 
+    opacity: 0.6;
+    transition: 0.3s;
 }
 
 .board {
     width: 55%;
-    margin: 7rem auto;
+    margin: 6rem auto;
     overflow: auto;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto auto;
+    border: 5px solid black;
+    outline: 5px solid white;
 }

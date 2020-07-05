@@ -1,5 +1,6 @@
 import React from 'react';
 import Board from './components/Board';
+import Particles from 'react-particles-js';
 import './App.css';
 
 class App extends React.Component {
@@ -20,10 +21,14 @@ class App extends React.Component {
       selectedOptions: [],
       deletePiece: '',
       selection: '',
-      playerTurn: 'red'
+      playerTurn: 'red',
+      redScore: 0,
+      blackScore: 0
     }
 
   }
+
+  
 
   makeMove = (id, row, col) => {
     const board = this.state.board;
@@ -48,12 +53,13 @@ class App extends React.Component {
       }))
       
     }
+    this.setState({deletePiece: ''});
       
     
   }
 
   onSelect = (event) => {
-    const color = event.target.className.substring(0, event.target.className.indexOf(' '));
+    const color = event.target.className;
     const {board, playerTurn} = this.state;
     const row = parseInt(event.target.id.charAt(0));
     const col = parseInt(event.target.id.charAt(1));
@@ -136,8 +142,7 @@ class App extends React.Component {
                     deletePiece: "" + (row - 1) + (col + 1)
                   }));
                 }
-              }
-              
+              }              
             }
           }
           if(row !== 7 && col !== 7) {
@@ -169,8 +174,7 @@ class App extends React.Component {
                     deletePiece: "" + (row + 1) + (col - 1)
                   }));
                 }
-              }
-             
+              }             
             }
           }       
             // if (row !== 0 && board[row - 1][col - 1] === null && playerTurn === 'red') {
@@ -226,10 +230,101 @@ class App extends React.Component {
   }
 
   render() {
+    const particlesOptions = {
+      "particles": {
+        "number": {
+          "value": 40,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color":{
+          "value": this.state.playerTurn === 'red' ? '#FF0000' : '#000000'
+        },
+        "shape": {
+          "type": ["circle", "star"],
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          }
+        },
+        "polygon": {
+          "nb_sides": 5
+        },
+        "opacity": {
+          "value": 1,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 5,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": false,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "random": true,
+          "speed": 5,
+          "direction": "top",
+          "out_mode": "out",
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "events": {
+          "onhover": {
+            "enable": false,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          }
+        },
+        "modes": {
+          "bubble": {
+            "distance": 250,
+            "duration": 2,
+            "size": 0,
+            "opacity": 0
+          },
+          "repulse": {
+            "distance": 400,
+            "duration": 4
+          }
+        }
+      }
+      }
     return (
       <div className="container">
-        <h1>Checkers</h1>
-        <h3>{this.state.playerTurn}'s Turn</h3>
+        <Particles className="particles" params={particlesOptions}
+    />
+        <h1>Checkers Game</h1>
+        <h3 className={this.state.playerTurn === 'red' ? 'red-turn-label' : 'black-turn-label'}>{this.state.playerTurn}'s Turn</h3>
+        <p>{`Black x${this.state.blackScore}`}</p>
+        <p>{`Red x${this.state.redScore}`}</p>
+        {/* <button className="black black-piece"></button> */}
         <Board board={this.state.board} onSelect={this.onSelect} selectOptions={this.state.selectedOptions} />
       </div>
     );
