@@ -34,9 +34,27 @@ body {
 .black-turn-label {
     background: black;
 }
+
+.score-display {
+    display: grid;
+    grid-template-columns: auto auto;
+    text-align: center;
+    width: 55%;
+    margin: 0 auto;
+    color: white;
+}
 /* 
 .black-piece {
     border-radius: 50%;
     width: 50px;
     height: 50px;
 } */
+
+@media only screen and (max-width: 600px) {
+    .container h1 {
+        font-size: 2.2rem;
+    }
+    .container h3 {
+        font-size: 1.5rem;
+    }
+}

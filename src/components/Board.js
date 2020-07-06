@@ -29,6 +29,7 @@ const Board = (props) => {
         <div className="board">
             {renderBoard(props)}
         </div>
+        
     )
 }
 

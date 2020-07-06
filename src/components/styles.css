@@ -12,10 +12,32 @@
 
 .piece div {
     border-radius: 50%;
-    width: 80%;
-    height: 80%;
+    width: 55px;
+    height: 55px;
+    text-align: center;
     
+}
 
+.piece .empty {
+    min-width: 100%;
+    height: 100%;
+    border-radius: 0;
+}
+
+.piece div * {
+    pointer-events: none;
+    min-width: 50%;
+    height: 50%;
+
+}
+
+
+.redKing {
+    background: red;
+}
+
+.blackKing {
+    background: black;
 }
 
 .empty {
@@ -32,7 +54,7 @@
 }
 
 .board {
-    width: 55%;
+    /* width: 55%; */
     margin: 6rem auto;
     overflow: auto;
     display: grid;
@@ -40,3 +62,20 @@
     border: 5px solid black;
     outline: 5px solid white;
 }
+
+@media only screen and (min-width: 1500px) {
+    .board {
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .piece {
+        height: 40px;
+    }
+    .piece div {
+        width: 35px;
+        height: 35px;
+    }
+}
+
