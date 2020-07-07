@@ -48,13 +48,11 @@
 .selectedBox.piece {
     background-color: yellow !important;
     box-shadow: 0 0 20px white; 
-    /* border: 1px solid white; */ 
     opacity: 0.6;
     transition: 0.3s;
 }
 
 .board {
-    /* width: 55%; */
     margin: 6rem auto;
     overflow: auto;
     display: grid;

@@ -1,6 +1,6 @@
 import React from 'react';
 import Board from './components/Board';
-import Particles from 'react-particles-js';
+import Particles from './components/Particles';
 import './App.css';
 
 class App extends React.Component {
@@ -73,13 +73,15 @@ class App extends React.Component {
         }      
       }
       board[prevRow][prevCol] = null;
-      this.setState(prevState => ({
-        playerTurn: prevState.playerTurn === 'red' ? 'black' : 'red',
+      if (score.red !== 12 && score.black !== 12) {
+        this.setState(prevState => ({playerTurn: prevState.playerTurn === 'red' ? 'black' : 'red'}))
+      }
+      this.setState({
         board,
         deletePiece: [],
         score,
         gameOver: (score.red === 12 || score.black === 12) ? true : false
-      }))
+      })
       
     }
     this.setState({deletePiece: []});
@@ -208,152 +210,18 @@ class App extends React.Component {
                 }             
               }
             }       
-              // if (row !== 0 && board[row - 1][col - 1] === null && playerTurn === 'red') {
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
-              //   }));
-              // } else if (board[row - 1][col - 1] !== playerTurn && board[row - 1][col - 1] !== null && playerTurn === 'red' ) {
-              //   console.log("1");
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
-              //     deletePiece: "" + (row - 1) + (col - 1)
-              //   }));
-              // }   
-              // if (row !==  0 && board[row - 1][col + 1] === null && playerTurn === 'red') {
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
-              //   }));
-              // } else if (board[row - 1][col + 1] !== playerTurn && board[row - 1][col + 1] !== null && playerTurn === 'red') {
-              //   console.log("2");
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
-              //     deletePiece: "" + (row - 1) + (col + 1)
-              //   }));
-              // }
-              // if (row!== 7 && board[row + 1][col + 1] === null && playerTurn === 'black') {
-              //   console.log('b1')
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
-              //   }));
-              // } else if (board[row + 1][col + 1] !== playerTurn && board[row + 1][col + 1] !== null && playerTurn === 'black') {
-              //   console.log("3");
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
-              //     deletePiece: "" + (row + 1) + (col + 1)
-              //   }));
-              // }
-              // if (row !== 7 && board[row + 1][col - 1] === null && playerTurn === 'black') {
-              //   console.log('b2')
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
-              //   }));
-              // } else if (board[row + 1][col - 1] !== playerTurn && board[row + 1][col - 1] !== null && playerTurn === 'black') {
-              //   console.log(board[row + 1][col - 1])
-              //   console.log("4");
-              //   this.setState(prevState => ({
-              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
-              //     deletePiece: "" + (row + 1) + (col - 1)
-              //   }));
-              // }     
           }
       }
-    }
-    
+    } 
   }
 
   render() {
-    const particlesOptions = {
-      "particles": {
-        "number": {
-          "value": 40,
-          "density": {
-            "enable": true,
-            "value_area": 800
-          }
-        },
-        "color":{
-          "value": this.state.playerTurn === 'red' ? '#FF0000' : '#000000'
-        },
-        "shape": {
-          "type": ["circle", "star"],
-          "stroke": {
-            "width": 0,
-            "color": "#000000"
-          }
-        },
-        "polygon": {
-          "nb_sides": 5
-        },
-        "opacity": {
-          "value": 1,
-          "random": false,
-          "anim": {
-            "enable": false,
-            "speed": 1,
-            "opacity_min": 0.1,
-            "sync": false
-          }
-        },
-        "size": {
-          "value": 5,
-          "random": true,
-          "anim": {
-            "enable": false,
-            "speed": 40,
-            "size_min": 0.1,
-            "sync": false
-          }
-        },
-        "line_linked": {
-          "enable": false,
-          "distance": 150,
-          "color": "#ffffff",
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "random": true,
-          "speed": 5,
-          "direction": "top",
-          "out_mode": "out",
-          "attract": {
-            "enable": false,
-            "rotateX": 600,
-            "rotateY": 1200
-          }
-        }
-      },
-      "interactivity": {
-        "events": {
-          "onhover": {
-            "enable": false,
-            "mode": "repulse"
-          },
-          "onclick": {
-            "enable": true,
-            "mode": "push"
-          }
-        },
-        "modes": {
-          "bubble": {
-            "distance": 250,
-            "duration": 2,
-            "size": 0,
-            "opacity": 0
-          },
-          "repulse": {
-            "distance": 400,
-            "duration": 4
-          }
-        }
-      }
-      }
+    
     return (
       <div className="container">
-        <Particles className="particles" params={particlesOptions}
-    />
+        <Particles color={this.state.playerTurn} />
         <h1>Checkers Game</h1>
-        {this.state.gameOver ? <h3 className={this.state.playerTurn === 'red' ? 'black-turn-label' : 'red-turn-label'}>WINNER :)</h3> : 
+        {this.state.gameOver ? <h3 className={this.state.playerTurn === 'red' ? 'red-turn-label' : 'black-turn-label'}>WINNER :)</h3> : 
         <h3 className={this.state.playerTurn === 'red' ? 'red-turn-label' : 'black-turn-label'}>{this.state.playerTurn}'s Turn</h3>}
         <div className="score-display">
           <p>{`Black x${this.state.score.black}`}</p>
@@ -362,8 +230,6 @@ class App extends React.Component {
         <div className="controls">
           <button onClick={this.resetGame}>Reset Game</button>   
         </div>
-            
-        {/* <button className="black black-piece"></button> */}
         <Board board={this.state.board} onSelect={this.onSelect} selectOptions={this.state.selectedOptions} />
       </div>
     );

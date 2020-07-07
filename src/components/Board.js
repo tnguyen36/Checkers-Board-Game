@@ -12,7 +12,7 @@ const renderBoard = (props) => {
      for (var col = 0; col < board[row].length; col++) {
          colorTile = !colorTile;
          results.push(
-                <div className="grid-item">
+                <div key={'' + row + col} className="grid-item">
                     <Piece id={'' + row + col} tile={colorTile} color={board[row][col]} onSelect={onSelect} selectOptions={selectOptions} /> 
                 </div>
                    
