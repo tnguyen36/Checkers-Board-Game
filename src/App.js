@@ -6,8 +6,14 @@ import './App.css';
 class App extends React.Component {
 
   constructor(props) {
-    super(props);
-    this.state = {
+    super(props);   
+    this.state = this.getInitialState;
+  }
+
+  get getInitialState() {
+    const colors = ['black', 'red'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    return {
       board: [
         ['black',null,'black',null,'black',null,'black',null],
         [null,'black',null,'black',null,'black',null,'black'],
@@ -21,14 +27,20 @@ class App extends React.Component {
       selectedOptions: [],
       deletePiece: [],
       selection: '',
-      playerTurn: 'red',
+      playerTurn: color,
       score: {
         red: 0,
         black: 0
-      }
+      },
+      gameOver: false
     }
-
   }
+
+  resetGame = () => {
+    this.setState(this.getInitialState);
+  }
+
+ 
 
   checkPromotion = (row, playerTurn, board, prevRow, prevCol) => {
     if (playerTurn === 'red' && row === 0) {
@@ -65,7 +77,8 @@ class App extends React.Component {
         playerTurn: prevState.playerTurn === 'red' ? 'black' : 'red',
         board,
         deletePiece: [],
-        score
+        score,
+        gameOver: (score.red === 12 || score.black === 12) ? true : false
       }))
       
     }
@@ -75,173 +88,175 @@ class App extends React.Component {
   }
 
   onSelect = (event) => {
-    const color = event.target.className;
-    const {board, playerTurn} = this.state;
-    const row = parseInt(event.target.id.charAt(0));
-    const col = parseInt(event.target.id.charAt(1));
-    const isKing = color.includes('King');
-      this.setState({selection: event.target.id});
-      this.makeMove(event.target.id, row, col);
-      this.setState({selectedOptions: []})
-      if (playerTurn === color || color.includes(playerTurn)) {
-        if (col === 0 && row === 0) {
-          if (board[row + 1][col + 1] === null && board[row + 1][col + 1] !== playerTurn) {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
-            }));
-          } else {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
-              deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col + 1)]
-            }));
-          }
-        } else if (col === 7 && row === 0) {
-          if (board[row + 1][col - 1] === null && board[row + 1][col - 1] !== playerTurn) {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
-            }));
-          } else {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
-              deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col - 1)]
-            }));
-          }
-        } else if (col === 7 && row === 7){
-          if (board[row - 1][col - 1] === null && board[row - 1][col - 1] !== playerTurn) {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
-            }));
-          } else {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
-              deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col - 1)]
-            }));
-          }
-        } else if (col === 0 && row === 7) {
-          if (board[row - 1][col + 1] === null && board[row - 1][col + 1] !== playerTurn) {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
-            }));
-          } else {
-            this.setState(prevState => ({
-              selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
-              deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col + 1)]
-            }));
-          }
-        } else {
-          if (row !== 0 && col !== 0) {
-            if ((board[row - 1][col - 1] === null && playerTurn === 'red') || (isKing && board[row - 1][col - 1] === null )) {
+    if (!this.state.gameOver) {
+      const color = event.target.className;
+      const {board, playerTurn} = this.state;
+      const row = parseInt(event.target.id.charAt(0));
+      const col = parseInt(event.target.id.charAt(1));
+      const isKing = color.includes('King');
+        this.setState({selection: event.target.id});
+        this.makeMove(event.target.id, row, col);
+        this.setState({selectedOptions: []})
+        if (playerTurn === color || color.includes(playerTurn)) {
+          if (col === 0 && row === 0) {
+            if (board[row + 1][col + 1] === null && board[row + 1][col + 1] !== playerTurn) {
               this.setState(prevState => ({
-                selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
+                selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
               }));
-            } else if ((board[row - 1][col - 1] !== playerTurn && playerTurn === 'red') || isKing) {
-                if (row >= 2 && col >= 2) {
-                  if (board[row - 2][col - 2] === null) {
-                    this.setState(prevState => ({
-                      selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
-                      deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col - 1)]
-                    }));
-                  }
-                }
-             
-            }
-          }
-          if (row !== 0 && col !== 7) {
-            if ((board[row - 1][col + 1] === null && playerTurn === 'red') || (isKing && board[row - 1][col + 1] === null )) {
+            } else {
               this.setState(prevState => ({
-                selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
+                selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
+                deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col + 1)]
               }));
-            } else if ((board[row - 1][col + 1] !== playerTurn && playerTurn === 'red') || isKing) {
-              if (row >= 2 && col <= 5) {
-                if (board[row - 2][col + 2] === null) {
-                  this.setState(prevState => ({
-                    selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
-                    deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col + 1)]
-                  }));
-                }
-              }              
             }
-          }
-          if(row !== 7 && col !== 7) {
-            if ((board[row + 1][col + 1] === null && playerTurn === 'black') || (isKing && board[row + 1][col + 1] === null )) {
-              this.setState(prevState => ({
-                    selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
-                  }));
-            } else if ((board[row + 1][col + 1] !== playerTurn && playerTurn === 'black') || isKing) {
-              if (row <= 5 && col <= 5) {
-                if (board[row + 2][col + 2] === null) {
-                  this.setState(prevState => ({
-                    selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
-                    deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col + 1)]
-                  }));
-                }
-              }             
-            }
-          }
-          if (row !== 7 && col !== 0) {
-            if ((board[row + 1][col - 1] === null && playerTurn === 'black') || (isKing && board[row + 1][col - 1] === null )) {
+          } else if (col === 7 && row === 0) {
+            if (board[row + 1][col - 1] === null && board[row + 1][col - 1] !== playerTurn) {
               this.setState(prevState => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
               }));
-            } else if ((board[row + 1][col - 1] !== playerTurn && playerTurn === 'black') || isKing) {
-              if (row <= 5 && col >= 2) {
-                if (board[row + 2][col - 2] === null) {
-                  this.setState(prevState => ({
-                    selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
-                    deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col - 1)]
-                  }));
-                }
-              }             
+            } else {
+              this.setState(prevState => ({
+                selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
+                deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col - 1)]
+              }));
             }
-          }       
-            // if (row !== 0 && board[row - 1][col - 1] === null && playerTurn === 'red') {
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
-            //   }));
-            // } else if (board[row - 1][col - 1] !== playerTurn && board[row - 1][col - 1] !== null && playerTurn === 'red' ) {
-            //   console.log("1");
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
-            //     deletePiece: "" + (row - 1) + (col - 1)
-            //   }));
-            // }   
-            // if (row !==  0 && board[row - 1][col + 1] === null && playerTurn === 'red') {
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
-            //   }));
-            // } else if (board[row - 1][col + 1] !== playerTurn && board[row - 1][col + 1] !== null && playerTurn === 'red') {
-            //   console.log("2");
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
-            //     deletePiece: "" + (row - 1) + (col + 1)
-            //   }));
-            // }
-            // if (row!== 7 && board[row + 1][col + 1] === null && playerTurn === 'black') {
-            //   console.log('b1')
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
-            //   }));
-            // } else if (board[row + 1][col + 1] !== playerTurn && board[row + 1][col + 1] !== null && playerTurn === 'black') {
-            //   console.log("3");
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
-            //     deletePiece: "" + (row + 1) + (col + 1)
-            //   }));
-            // }
-            // if (row !== 7 && board[row + 1][col - 1] === null && playerTurn === 'black') {
-            //   console.log('b2')
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
-            //   }));
-            // } else if (board[row + 1][col - 1] !== playerTurn && board[row + 1][col - 1] !== null && playerTurn === 'black') {
-            //   console.log(board[row + 1][col - 1])
-            //   console.log("4");
-            //   this.setState(prevState => ({
-            //     selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
-            //     deletePiece: "" + (row + 1) + (col - 1)
-            //   }));
-            // }     
-        }
+          } else if (col === 7 && row === 7){
+            if (board[row - 1][col - 1] === null && board[row - 1][col - 1] !== playerTurn) {
+              this.setState(prevState => ({
+                selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
+              }));
+            } else {
+              this.setState(prevState => ({
+                selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
+                deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col - 1)]
+              }));
+            }
+          } else if (col === 0 && row === 7) {
+            if (board[row - 1][col + 1] === null && board[row - 1][col + 1] !== playerTurn) {
+              this.setState(prevState => ({
+                selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
+              }));
+            } else {
+              this.setState(prevState => ({
+                selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
+                deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col + 1)]
+              }));
+            }
+          } else {
+            if (row !== 0 && col !== 0) {
+              if ((board[row - 1][col - 1] === null && playerTurn === 'red') || (isKing && board[row - 1][col - 1] === null )) {
+                this.setState(prevState => ({
+                  selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
+                }));
+              } else if ((board[row - 1][col - 1] !== playerTurn && playerTurn === 'red') || isKing) {
+                  if (row >= 2 && col >= 2) {
+                    if (board[row - 2][col - 2] === null) {
+                      this.setState(prevState => ({
+                        selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
+                        deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col - 1)]
+                      }));
+                    }
+                  }
+              
+              }
+            }
+            if (row !== 0 && col !== 7) {
+              if ((board[row - 1][col + 1] === null && playerTurn === 'red') || (isKing && board[row - 1][col + 1] === null )) {
+                this.setState(prevState => ({
+                  selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
+                }));
+              } else if ((board[row - 1][col + 1] !== playerTurn && playerTurn === 'red') || isKing) {
+                if (row >= 2 && col <= 5) {
+                  if (board[row - 2][col + 2] === null) {
+                    this.setState(prevState => ({
+                      selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
+                      deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col + 1)]
+                    }));
+                  }
+                }              
+              }
+            }
+            if(row !== 7 && col !== 7) {
+              if ((board[row + 1][col + 1] === null && playerTurn === 'black') || (isKing && board[row + 1][col + 1] === null )) {
+                this.setState(prevState => ({
+                      selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
+                    }));
+              } else if ((board[row + 1][col + 1] !== playerTurn && playerTurn === 'black') || isKing) {
+                if (row <= 5 && col <= 5) {
+                  if (board[row + 2][col + 2] === null) {
+                    this.setState(prevState => ({
+                      selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
+                      deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col + 1)]
+                    }));
+                  }
+                }             
+              }
+            }
+            if (row !== 7 && col !== 0) {
+              if ((board[row + 1][col - 1] === null && playerTurn === 'black') || (isKing && board[row + 1][col - 1] === null )) {
+                this.setState(prevState => ({
+                  selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
+                }));
+              } else if ((board[row + 1][col - 1] !== playerTurn && playerTurn === 'black') || isKing) {
+                if (row <= 5 && col >= 2) {
+                  if (board[row + 2][col - 2] === null) {
+                    this.setState(prevState => ({
+                      selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
+                      deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col - 1)]
+                    }));
+                  }
+                }             
+              }
+            }       
+              // if (row !== 0 && board[row - 1][col - 1] === null && playerTurn === 'red') {
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
+              //   }));
+              // } else if (board[row - 1][col - 1] !== playerTurn && board[row - 1][col - 1] !== null && playerTurn === 'red' ) {
+              //   console.log("1");
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
+              //     deletePiece: "" + (row - 1) + (col - 1)
+              //   }));
+              // }   
+              // if (row !==  0 && board[row - 1][col + 1] === null && playerTurn === 'red') {
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
+              //   }));
+              // } else if (board[row - 1][col + 1] !== playerTurn && board[row - 1][col + 1] !== null && playerTurn === 'red') {
+              //   console.log("2");
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
+              //     deletePiece: "" + (row - 1) + (col + 1)
+              //   }));
+              // }
+              // if (row!== 7 && board[row + 1][col + 1] === null && playerTurn === 'black') {
+              //   console.log('b1')
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
+              //   }));
+              // } else if (board[row + 1][col + 1] !== playerTurn && board[row + 1][col + 1] !== null && playerTurn === 'black') {
+              //   console.log("3");
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
+              //     deletePiece: "" + (row + 1) + (col + 1)
+              //   }));
+              // }
+              // if (row !== 7 && board[row + 1][col - 1] === null && playerTurn === 'black') {
+              //   console.log('b2')
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
+              //   }));
+              // } else if (board[row + 1][col - 1] !== playerTurn && board[row + 1][col - 1] !== null && playerTurn === 'black') {
+              //   console.log(board[row + 1][col - 1])
+              //   console.log("4");
+              //   this.setState(prevState => ({
+              //     selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
+              //     deletePiece: "" + (row + 1) + (col - 1)
+              //   }));
+              // }     
+          }
+      }
     }
     
   }
@@ -338,11 +353,16 @@ class App extends React.Component {
         <Particles className="particles" params={particlesOptions}
     />
         <h1>Checkers Game</h1>
-        <h3 className={this.state.playerTurn === 'red' ? 'red-turn-label' : 'black-turn-label'}>{this.state.playerTurn}'s Turn</h3>
+        {this.state.gameOver ? <h3 className={this.state.playerTurn === 'red' ? 'black-turn-label' : 'red-turn-label'}>WINNER :)</h3> : 
+        <h3 className={this.state.playerTurn === 'red' ? 'red-turn-label' : 'black-turn-label'}>{this.state.playerTurn}'s Turn</h3>}
         <div className="score-display">
           <p>{`Black x${this.state.score.black}`}</p>
           <p>{`Red x${this.state.score.red}`}</p>
-        </div>       
+        </div>
+        <div className="controls">
+          <button onClick={this.resetGame}>Reset Game</button>   
+        </div>
+            
         {/* <button className="black black-piece"></button> */}
         <Board board={this.state.board} onSelect={this.onSelect} selectOptions={this.state.selectedOptions} />
       </div>

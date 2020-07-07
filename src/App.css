@@ -43,6 +43,20 @@ body {
     margin: 0 auto;
     color: white;
 }
+
+.controls {
+    text-align: center;
+}
+
+.controls button {
+    background-color: transparent;
+    color: #fffc00;
+    padding: 3px;
+}
+
+.controls button:focus {
+    background-color: transparent;
+}
 /* 
 .black-piece {
     border-radius: 50%;
