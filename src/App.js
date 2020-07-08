@@ -6,7 +6,8 @@ import './App.css';
 class App extends React.Component {
 
   constructor(props) {
-    super(props);   
+    super(props);
+    document.title = 'Checkers Board Game';   
     this.state = this.getInitialState;
   }
 
