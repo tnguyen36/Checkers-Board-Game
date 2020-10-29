@@ -1,7 +1,16 @@
 import React from 'react';
 import './styles.css';
 
-const Piece = (props) => {
+type IPiece = {
+    color: String
+    id: string
+    onSelect: any
+    selectOptions: Array<String>
+    tile: boolean     
+}
+
+
+const Piece = (props: IPiece) => {
     return (
         <div className={`piece ${props.selectOptions.includes(props.id) ? 'selectedBox' : 'box'} ${props.tile ? 'color-tile' : undefined}`}>
             <div 

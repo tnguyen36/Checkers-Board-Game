@@ -3,17 +3,32 @@ import Board from './components/Board';
 import Particles from './components/Particles';
 import './App.css';
 
-class App extends React.Component {
+type IState = {
+  board: Array<String>
+  selectedOptions: Array<String>
+  deletePiece: Array<String>
+  selection: String
+  playerTurn: String
+  score: IScore
+  gameOver: boolean
+}
 
-  constructor(props) {
+type IScore = {
+  red: number
+  black: number
+}
+
+class App extends React.Component<any, any> {
+
+  constructor(props: any) {
     super(props);
     document.title = 'Checkers Board Game';   
     this.state = this.getInitialState;
   }
 
   get getInitialState() {
-    const colors = ['black', 'red'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
+    const colors: Array<String> = ['black', 'red'];
+    const color: String = colors[Math.floor(Math.random() * colors.length)];
     return {
       board: [
         ['black',null,'black',null,'black',null,'black',null],
@@ -43,7 +58,7 @@ class App extends React.Component {
 
  
 
-  checkPromotion = (row, playerTurn, board, prevRow, prevCol) => {
+  checkPromotion = (row: number, playerTurn: String, board: Array<String> , prevRow: number, prevCol: number): boolean => {
     if (playerTurn === 'red' && row === 0) {
       return true;
     } else if (playerTurn === 'black' && row === 7) {
@@ -57,16 +72,16 @@ class App extends React.Component {
 
   
 
-  makeMove = (id, row, col) => {
+  makeMove = (id: String, row: number, col: number): void => {
     const {selectedOptions, deletePiece, board, score, playerTurn} = this.state
     if (selectedOptions.includes(id)) {
-      const prevRow = parseInt(this.state.selection.charAt(0));
-      const prevCol = parseInt(this.state.selection.charAt(1));
+      const prevRow: number = parseInt(this.state.selection.charAt(0));
+      const prevCol: number = parseInt(this.state.selection.charAt(1));
       this.checkPromotion(row, playerTurn, board, prevRow, prevCol) ? board[row][col] = playerTurn + 'King' : board[row][col] = playerTurn;
       if (deletePiece.length > 0) {
         for (var i = 0; i < deletePiece.length; i++) {
-          var deleteRow = parseInt(deletePiece[i].charAt(0));
-          var deleteCol = parseInt(deletePiece[i].charAt(1));
+          var deleteRow: number = parseInt(deletePiece[i].charAt(0));
+          var deleteCol: number = parseInt(deletePiece[i].charAt(1));
           if (Math.abs(row - deleteRow) === 1 && Math.abs(col - deleteCol) === 1) {
             playerTurn === 'red' ? score.red++ : score.black++
             board[deleteRow][deleteCol] = null;
@@ -75,7 +90,7 @@ class App extends React.Component {
       }
       board[prevRow][prevCol] = null;
       if (score.red !== 12 && score.black !== 12) {
-        this.setState(prevState => ({playerTurn: prevState.playerTurn === 'red' ? 'black' : 'red'}))
+        this.setState((prevState: IState) => ({playerTurn: prevState.playerTurn === 'red' ? 'black' : 'red'}))
       }
       this.setState({
         board,
@@ -90,57 +105,57 @@ class App extends React.Component {
     
   }
 
-  onSelect = (event) => {
+  onSelect = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (!this.state.gameOver) {
-      const color = event.target.className;
+      const color: String = event.target.className;
       const {board, playerTurn} = this.state;
-      const row = parseInt(event.target.id.charAt(0));
-      const col = parseInt(event.target.id.charAt(1));
-      const isKing = color.includes('King');
+      const row: number = parseInt(event.target.id.charAt(0));
+      const col: number = parseInt(event.target.id.charAt(1));
+      const isKing: boolean = color.includes('King');
         this.setState({selection: event.target.id});
         this.makeMove(event.target.id, row, col);
         this.setState({selectedOptions: []})
         if (playerTurn === color || color.includes(playerTurn)) {
           if (col === 0 && row === 0) {
             if (board[row + 1][col + 1] === null && board[row + 1][col + 1] !== playerTurn) {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
               }));
             } else {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
                 deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col + 1)]
               }));
             }
           } else if (col === 7 && row === 0) {
             if (board[row + 1][col - 1] === null && board[row + 1][col - 1] !== playerTurn) {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
               }));
             } else {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
                 deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col - 1)]
               }));
             }
           } else if (col === 7 && row === 7){
             if (board[row - 1][col - 1] === null && board[row - 1][col - 1] !== playerTurn) {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
               }));
             } else {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
                 deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col - 1)]
               }));
             }
           } else if (col === 0 && row === 7) {
             if (board[row - 1][col + 1] === null && board[row - 1][col + 1] !== playerTurn) {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
               }));
             } else {
-              this.setState(prevState => ({
+              this.setState((prevState: IState) => ({
                 selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
                 deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col + 1)]
               }));
@@ -148,13 +163,13 @@ class App extends React.Component {
           } else {
             if (row !== 0 && col !== 0) {
               if ((board[row - 1][col - 1] === null && playerTurn === 'red') || (isKing && board[row - 1][col - 1] === null )) {
-                this.setState(prevState => ({
+                this.setState((prevState: IState) => ({
                   selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col - 1)]
                 }));
               } else if ((board[row - 1][col - 1] !== playerTurn && playerTurn === 'red') || isKing) {
                   if (row >= 2 && col >= 2) {
                     if (board[row - 2][col - 2] === null) {
-                      this.setState(prevState => ({
+                      this.setState((prevState: IState) => ({
                         selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col - 2)],
                         deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col - 1)]
                       }));
@@ -165,13 +180,13 @@ class App extends React.Component {
             }
             if (row !== 0 && col !== 7) {
               if ((board[row - 1][col + 1] === null && playerTurn === 'red') || (isKing && board[row - 1][col + 1] === null )) {
-                this.setState(prevState => ({
+                this.setState((prevState: IState) => ({
                   selectedOptions: [...prevState.selectedOptions, "" + (row - 1) + (col + 1)]
                 }));
               } else if ((board[row - 1][col + 1] !== playerTurn && playerTurn === 'red') || isKing) {
                 if (row >= 2 && col <= 5) {
                   if (board[row - 2][col + 2] === null) {
-                    this.setState(prevState => ({
+                    this.setState((prevState: IState) => ({
                       selectedOptions: [...prevState.selectedOptions, "" + (row - 2) + (col + 2)],
                       deletePiece: [...prevState.deletePiece, "" + (row - 1) + (col + 1)]
                     }));
@@ -181,13 +196,13 @@ class App extends React.Component {
             }
             if(row !== 7 && col !== 7) {
               if ((board[row + 1][col + 1] === null && playerTurn === 'black') || (isKing && board[row + 1][col + 1] === null )) {
-                this.setState(prevState => ({
+                this.setState((prevState: IState) => ({
                       selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col + 1)]
                     }));
               } else if ((board[row + 1][col + 1] !== playerTurn && playerTurn === 'black') || isKing) {
                 if (row <= 5 && col <= 5) {
                   if (board[row + 2][col + 2] === null) {
-                    this.setState(prevState => ({
+                    this.setState((prevState: IState) => ({
                       selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col + 2)],
                       deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col + 1)]
                     }));
@@ -197,13 +212,13 @@ class App extends React.Component {
             }
             if (row !== 7 && col !== 0) {
               if ((board[row + 1][col - 1] === null && playerTurn === 'black') || (isKing && board[row + 1][col - 1] === null )) {
-                this.setState(prevState => ({
+                this.setState((prevState: IState) => ({
                   selectedOptions: [...prevState.selectedOptions, "" + (row + 1) + (col - 1)]
                 }));
               } else if ((board[row + 1][col - 1] !== playerTurn && playerTurn === 'black') || isKing) {
                 if (row <= 5 && col >= 2) {
                   if (board[row + 2][col - 2] === null) {
-                    this.setState(prevState => ({
+                    this.setState((prevState: IState) => ({
                       selectedOptions: [...prevState.selectedOptions, "" + (row + 2) + (col - 2)],
                       deletePiece: [...prevState.deletePiece, "" + (row + 1) + (col - 1)]
                     }));

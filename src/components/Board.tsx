@@ -2,12 +2,16 @@ import React from 'react';
 import Piece from './Piece';
 import './styles.css';
 
+type IBoard = {
+    board: Array<String>
+    onSelect: (event: React.ChangeEvent<HTMLInputElement>) => void
+    selectOptions: Array<String>
+}
 
-
-const renderBoard = (props) => {
+const renderBoard = (props: IBoard): Array<any> => {
  var {board, onSelect, selectOptions } = props;
- var results = [];
- var colorTile = true;
+ var results: Array<any> = [];
+ var colorTile: boolean = true;
  for (var row = 0; row < board.length; row++) {
      for (var col = 0; col < board[row].length; col++) {
          colorTile = !colorTile;
@@ -23,7 +27,7 @@ const renderBoard = (props) => {
  return results;
 }
 
-const Board = (props) => {
+const Board = (props: IBoard) => {
     
     return (
         <div className="board">
